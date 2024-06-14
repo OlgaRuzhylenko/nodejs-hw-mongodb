@@ -1,15 +1,34 @@
 import express from 'express';
 import cors from 'cors';
+import pino from 'pino-http';
+import dotenv from 'dotenv';
+dotenv.config();
 
 import contacts from './db/contacts.js';
-// логіка роботи вашого express-серверу.
+
+const PORT = Number(process.env.PORT);
+
 const setupServer = () => {
   const app = express();
+
+  const logger = pino({
+    transport: {
+      target: 'pino-pretty',
+    },
+  });
+
+  app.use(logger);
   app.use(cors());
 
-  app.get();
+  app.get('/api/contacts', (req, res) => {
+    res.json(contacts);
+  });
 
-  const PORT = 3000;
+  app.use((req, res) => {
+    res.status(404).json({
+      message: 'Not found',
+    });
+  });
 
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
