@@ -4,10 +4,11 @@ import pino from 'pino-http';
 // import dotenv from 'dotenv';
 // dotenv.config();
 import env from './utils/env.js';
+import { Router } from 'express';
 
-import contacts from './db/contacts.js';
+// import contacts from './db/models/contacts.js';
 
-const port = env('PORT', '3000')
+const port = env('PORT', '3000');
 
 const setupServer = () => {
   const app = express();
@@ -17,16 +18,17 @@ const setupServer = () => {
       target: 'pino-pretty',
     },
   });
-
+  app.use(express.json);
   app.use(logger);
   app.use(cors());
 
-  app.get('/api/contacts', (req, res) => {
-    res.json(contacts);
-  });
+  // app.get('/api/contacts', (req, res) => {
+  //   res.json(contacts);
+  // });
 
-  app.use((req, res) => {
+  app.use('*', (error, req, res) => {
     res.status(404).json({
+      status: 404,
       message: 'Not found',
     });
   });
@@ -37,3 +39,4 @@ const setupServer = () => {
 };
 
 export default setupServer;
+
