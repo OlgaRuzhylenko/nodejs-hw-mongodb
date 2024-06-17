@@ -5,8 +5,7 @@ import pino from 'pino-http';
 // dotenv.config();
 import env from './utils/env.js';
 import { Router } from 'express';
-
-// import contacts from './db/models/contacts.js';
+import { ContactsCollection } from './db/models/contacts.js';
 
 const port = env('PORT', '3000');
 
@@ -22,9 +21,20 @@ const setupServer = () => {
   app.use(logger);
   app.use(cors());
 
-  // app.get('/api/contacts', (req, res) => {
-  //   res.json(contacts);
-  // });
+  const contactsRouter = new Router();
+
+  contactsRouter.get('/contacts', async (req, res, next) => {
+    try {
+      const allContacts = await ContactsCollection.find();
+      res.json({
+        status: 200,
+        message: 'Successfully found contacts!',
+        data: allContacts,
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
 
   app.use('*', (error, req, res) => {
     res.status(404).json({
