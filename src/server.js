@@ -4,8 +4,7 @@ import pino from 'pino-http';
 // import dotenv from 'dotenv';
 // dotenv.config();
 import env from './utils/env.js';
-import { Router } from 'express';
-import { ContactsCollection } from './db/models/contacts.js';
+import contactsRouter from './routers/contacts.js';
 
 const port = env('PORT', '3000');
 
@@ -17,26 +16,20 @@ const setupServer = () => {
       target: 'pino-pretty',
     },
   });
-  app.use(express.json);
+  app.use(express.json());
   app.use(logger);
   app.use(cors());
 
-  const contactsRouter = new Router();
+  app.use('/api', contactsRouter);
 
-  contactsRouter.get('/contacts', async (req, res, next) => {
-    try {
-      const allContacts = await ContactsCollection.find();
-      res.json({
-        status: 200,
-        message: 'Successfully found contacts!',
-        data: allContacts,
-      });
-    } catch (error) {
-      next(error);
-    }
+  app.use((error, req, res, next) => {
+    res.status(500).json({
+      status: 500,
+      message: error.message,
+    });
   });
 
-  app.use('*', (error, req, res) => {
+  app.use('*', (req, res) => {
     res.status(404).json({
       status: 404,
       message: 'Not found',
@@ -49,4 +42,3 @@ const setupServer = () => {
 };
 
 export default setupServer;
-
