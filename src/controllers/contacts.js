@@ -1,4 +1,4 @@
-import { contactsService, contactIdService } from '../services/contacts.js';
+import { contactsService } from '../services/contacts.js';
 
 const getAll = async (req, res, next) => {
   try {
@@ -13,12 +13,10 @@ const getAll = async (req, res, next) => {
   }
 };
 
-export const contactsController = { getAll };
-
 const getById = async (req, res, next) => {
   try {
     const { contactId } = req.params;
-    const contact = await contactIdService(contactId);
+    const contact = await contactsService.getContactById(contactId);
     if (!contact) {
       res.status(404).json({
         message: 'Contact not found',
@@ -29,8 +27,15 @@ const getById = async (req, res, next) => {
       data: contact,
     });
   } catch (error) {
-    next(error);
+    if (error.message.includes('Cast to ObjectId failed')) {
+      error.status = 404;
+    }
+    const { status = 500 } = error;
+
+    res.status(status).json({
+      message: error.message,
+    });
   }
 };
 
-export const contactsControllerId = { getById };
+export const contactsController = { getAll, getById };
