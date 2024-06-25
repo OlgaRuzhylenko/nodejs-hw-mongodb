@@ -23,9 +23,6 @@ const getById = async (req, res, next) => {
       });
       return;
     }
-    // res.status(200).json({
-    //   data: contact,
-    // });
     res.json({
       status: 200,
       message: `Successfully found contact with id ${contactId}!`,
