@@ -1,30 +1,29 @@
 import { contactsService } from '../services/contacts.js';
 import createHttpError from 'http-errors';
 
-const getAll = async (req, res, next) => {
-  try {
-    const contacts = await contactsService.getAll();
-    res.json({
-      status: 200,
-      message: 'Successfully found contacts!',
-      data: contacts,
-    });
-  } catch (error) {
-    next(error);
-  }
+const getAll = async (req, res) => {
+  const contacts = await contactsService.getAll();
+  res.json({
+    status: 200,
+    message: 'Successfully found contacts!',
+    data: contacts,
+  });
 };
 
 const getById = async (req, res, next) => {
+  ///після допомоги ментора із next(error) прибрати try catch!!!
   try {
     const { contactId } = req.params;
     const contact = await contactsService.getContactById(contactId);
     if (!contact) {
-      next(createHttpError(404,  {
+      next(
+        createHttpError(404, {
           status: res.status,
           message: res.message,
           data: { message: 'Contact not found' },
-        }));
-    
+        }),
+      );
+
       // res.status(404).json({
       //   message: 'Contact not found',
       // });
