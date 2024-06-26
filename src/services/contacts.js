@@ -8,4 +8,8 @@ const getContactById = async (contactId) => {
   return await ContactsCollection.findById(contactId);
 };
 
-export const contactsService = { getAll, getContactById };
+const addContact = async (data) => {
+return await ContactsCollection.create(data);
+}
+
+export const contactsService = { getAll, getContactById, addContact };
