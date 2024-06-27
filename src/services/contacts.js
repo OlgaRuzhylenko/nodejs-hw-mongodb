@@ -9,7 +9,25 @@ const getContactById = async (contactId) => {
 };
 
 const addContact = async (data) => {
-return await ContactsCollection.create(data);
-}
+  return await ContactsCollection.create(data);
+};
 
-export const contactsService = { getAll, getContactById, addContact };
+const updateContact = async (filter, data, options = {}) => {
+  const result = await ContactsCollection.findOneAndUpdate(filter, data, {
+    new: true,
+    includeResultMetadata: true,
+    ...options,
+  });
+  if (!result || !result.value) return null;
+
+  return {
+    data: result.value,
+  };
+};
+
+export const contactsService = {
+  getAll,
+  getContactById,
+  addContact,
+  updateContact,
+};
