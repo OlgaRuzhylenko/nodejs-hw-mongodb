@@ -1,5 +1,6 @@
 import { contactsService } from '../services/contacts.js';
 import createHttpError from 'http-errors';
+import {contactsAddSchema} from '../validation/contacts-schemas.js'
 
 const getAll = async (req, res) => {
   const contacts = await contactsService.getAll();
@@ -26,13 +27,22 @@ const getById = async (req, res) => {
 };
 
 const addContact = async (req, res) => {
-  const result = await contactsService.addContact(req.body);
+  try {
+    const validationResult = await contactsAddSchema.validateAsync(req.body, {
+      abortEarly: false,
+    });
 
-  res.status(201).json({
-    status: 201,
-    message: 'Successfully created a contact!',
-    data: result,
-  });
+      // const result = await contactsService.addContact(req.body);
+
+      // res.status(201).json({
+      //   status: 201,
+      //   message: 'Successfully created a contact!',
+      //   data: result,
+      // });
+  } catch (error) {
+console.log(error);
+  }
+
 };
 
 const patchContact = async (req, res) => {
