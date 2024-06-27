@@ -10,36 +10,19 @@ const getAll = async (req, res) => {
   });
 };
 
-const getById = async (req, res, next) => {
-  ///після допомоги ментора із next(error) прибрати try catch!!!
-  try {
-    const { contactId } = req.params;
-    const contact = await contactsService.getContactById(contactId);
+const getById = async (req, res) => {
+  const { contactId } = req.params;
+  const contact = await contactsService.getContactById(contactId);
 
-    if (!contact) {
-      return next(createHttpError(404, {
-        status: 404,
-        message: 'Contact not found',
-        data: { message: 'Contact not found' }
-      }));
-    }
-
-    res.json({
-      status: 200,
-      message: `Successfully found contact with id ${contactId}!`,
-      data: contact,
-    });
-
-  } catch (error) {
-    if (error.message.includes('Cast to ObjectId failed')) {
-      return next(createHttpError(404, {
-        status: 404,
-        message: 'Invalid contact ID',
-        data: { message: 'Invalid contact ID' }
-      }));
-    }
-    next(error);
+   if (!contact) {
+    throw createHttpError(404, 'Contact not found');
   }
+
+  res.json({
+    status: 200,
+    message: `Successfully found contact with id ${contactId}!`,
+    data: contact,
+  });
 };
 
 const addContact = async (req, res) => {
