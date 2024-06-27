@@ -15,9 +15,10 @@ const addContact = async (data) => {
 const updateContact = async (filter, data, options = {}) => {
   const result = await ContactsCollection.findOneAndUpdate(filter, data, {
     new: true,
+    runValidators: true,
     includeResultMetadata: true,
     ...options,
-  });
+  }); 
   if (!result || !result.value) return null;
 
   return {
