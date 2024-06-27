@@ -1,4 +1,4 @@
-export const errorHandler = (error, res, req, next) => {
+export const errorHandler = (error, req, res, next) => {
   const { status = 500, message = 'Something went wrong' } = error;
 
   res.status(status).json({
@@ -7,3 +7,4 @@ export const errorHandler = (error, res, req, next) => {
     data: error.data,
   });
 };
+
