@@ -59,7 +59,7 @@ const deleteContact = async (req, res) => {
   if (!contact) {
     throw createHttpError(404, 'Contact not found');
   }
-  res.json({
+  res.status(204).json({
     status: 204,
   });
 };
