@@ -1,16 +1,14 @@
 import { ContactsCollection } from '../db/models/contacts.js';
+import { SORT_ORDER } from '../constants/contacts-constants.js';
 
-const getAll = async () => {
-  return await ContactsCollection.find();
-};
+const getAll = async (req) => {
+  const {sortBy = 'name', sortOrder = SORT_ORDER.ASC} = req.query;
+  return await ContactsCollection.find().sort({[sortBy]: sortOrder});
+  };
 
-const getContactById = async (contactId) => {
-  return await ContactsCollection.findById(contactId);
-};
+const getContactById = async (contactId) => { return await ContactsCollection.findById(contactId);};
 
-const addContact = async (data) => {
-  return await ContactsCollection.create(data);
-};
+const addContact = async (data) => { return await ContactsCollection.create(data);};
 
 const updateContact = async (filter, data, options = {}) => {
   const result = await ContactsCollection.findOneAndUpdate(filter, data, {
@@ -26,14 +24,6 @@ const updateContact = async (filter, data, options = {}) => {
   };
 };
 
-const deleteContact = async (filter) => {
-  return await ContactsCollection.findOneAndDelete(filter);
-};
+const deleteContact = async (filter) => { return await ContactsCollection.findOneAndDelete(filter);};
 
-export const contactsService = {
-  getAll,
-  getContactById,
-  addContact,
-  updateContact,
-  deleteContact,
-};
+export const contactsService = { getAll, getContactById, addContact, updateContact, deleteContact};

@@ -3,7 +3,7 @@ import createHttpError from 'http-errors';
 
 
 const getAll = async (req, res) => {
-  const contacts = await contactsService.getAll();
+  const contacts = await contactsService.getAll(req);
   res.json({
     status: 200,
     message: 'Successfully found contacts!',
