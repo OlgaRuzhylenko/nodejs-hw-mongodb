@@ -1,9 +1,11 @@
 import { ContactsCollection } from '../db/models/contacts.js';
 import { SORT_ORDER } from '../constants/contacts-constants.js';
+import { parseSortOrder } from '../utils/parseSortOrder.js';
 
 const getAll = async (req) => {
-  const {sortBy = 'name', sortOrder = SORT_ORDER.ASC} = req.query;
-  return await ContactsCollection.find().sort({[sortBy]: sortOrder});
+  const {sortBy = 'name', sortOrder = SORT_ORDER.ASC, type, isFavourite} = req.query;
+  //перевірити фільтрацію по isFavourite
+  return await ContactsCollection.find().where('contactType').eq(type).where('isFavourite').eq(isFavourite).sort({[sortBy]: parseSortOrder(sortOrder)});
   };
 
 const getContactById = async (contactId) => { return await ContactsCollection.findById(contactId);};
