@@ -6,12 +6,15 @@ import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 const getAll = async (req, res) => {
   const {page, perPage} = parsePaginationParams(req.query);
 
-  const contacts = await contactsService.getAll(req);
+  const contacts = await contactsService.getAll({
+      page,
+      perPage,
+    });
   res.json({
     status: 200,
     message: 'Successfully found contacts!',
     data: contacts,
-  });
+     });
 };
 
 const getById = async (req, res) => {
