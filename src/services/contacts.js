@@ -7,8 +7,8 @@ const getAll = async ({filter, page, perPage, sortBy = '_id', sortOrder = 'asc'}
   const skip = (page - 1) * perPage;
     const contactsQuery = ContactsCollection.find();
 
-    if (filter.type) {
-      contactsQuery.where('type').eq(filter.type);
+    if (filter.contactType) {
+      contactsQuery.where('contactType').eq(filter.contactType);
     }
     if (filter.isFavourite) {
       contactsQuery.where('isFavourite').eq(filter.isFavourite);

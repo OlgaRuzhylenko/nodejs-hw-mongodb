@@ -8,12 +8,12 @@ const parsedBoolean = (value) => {
   return parsedValue;
 };
 
-export const parseContactsFilterParams = ({ type, isFavourite }) => {
-  const parsedType = contactTypeList.includes(type) ? type : null;
+export const parseContactsFilterParams = ({ contactType, isFavourite }) => {
+  const parsedType = contactTypeList.includes(contactType) ? contactType : null;
   const parsedFavourite = parsedBoolean(isFavourite);
 
   return {
-    type: parsedType,
+    contactType: parsedType,
     isFavourite: parsedFavourite,
   };
 };
