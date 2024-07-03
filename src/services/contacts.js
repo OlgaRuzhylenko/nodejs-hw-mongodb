@@ -1,20 +1,18 @@
 import { ContactsCollection } from '../db/models/contacts.js';
 import { SORT_ORDER } from '../constants/contacts-constants.js';
-import { parseSortOrder } from '../utils/parseSortOrder.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
-const getAll = async ({ page, perPage }) => {
+const getAll = async ({ page, perPage, sortBy = '_id', sortOrder = 'asc'}) => {
   // const {sortBy = 'name', sortOrder = SORT_ORDER.ASC, type, isFavourite} = req.query;
   // //перевірити фільтрацію по isFavourite
   // return await ContactsCollection.find().where('contactType').eq(type).where('isFavourite').eq(isFavourite).sort({[sortBy]: parseSortOrder(sortOrder)});
 
   const skip = (page - 1) * perPage;
   const contactsQuery = ContactsCollection.find();
-  const contactCount = await ContactsCollection.find()
-    .merge(contactsQuery)
-    .countDocuments();
+  const contactCount = await ContactsCollection.find().merge(contactsQuery).countDocuments();
 
-  const contacts = await ContactsCollection.find().skip(skip).limit(perPage);
+  const contacts = await ContactsCollection.find().skip(skip).limit(perPage).sort({[sortBy] : sortOrder});
+
   const paginationData = calculatePaginationData(contactCount, perPage, page);
 
   return {
