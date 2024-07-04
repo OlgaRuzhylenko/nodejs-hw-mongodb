@@ -1,8 +1,6 @@
 import { Schema, model } from 'mongoose';
-import {
-  contactTypeList,
-  stringLength,
-} from '../../constants/contacts-constants.js';
+
+import {contactTypeList, stringLength} from '../../constants/contacts-constants.js';
 import { mongooseSaveError, setUpdateSettings } from './hooks.js';
 
 const contactsSchema = new Schema(
