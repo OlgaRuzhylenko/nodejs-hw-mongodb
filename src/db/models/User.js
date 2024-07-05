@@ -10,7 +10,7 @@ const userSchema = new Schema(
     name: {
       type: String,
       required: true,
-    //   match: stringLength,
+      match: stringLength,
     },
     email: {
       type: String,
