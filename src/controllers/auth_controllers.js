@@ -2,6 +2,7 @@ import createHttpError from 'http-errors';
 
 import { findUser, userService } from '../services/auth-services.js';
 import { compareHash } from '../utils/hash.js';
+import { createSession } from '../services/session-services.js';
 
 export const signupController = async (req, res) => {
   const { email } = req.body;
@@ -34,9 +35,7 @@ export const loginController = async (req, res) => {
     throw createHttpError(401, 'Password not found');
   }
 
-  //тут буде токен
+  const session = await createSession(user._id);
 
-  res.json({
- //тут буде токен
-  });
+  res.json(session);
 };
