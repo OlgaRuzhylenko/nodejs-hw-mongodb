@@ -35,7 +35,26 @@ export const loginController = async (req, res) => {
     throw createHttpError(401, 'Password not found');
   }
 
-  const session = await createSession(user._id);
+  const { accessToken, refreshToken, _id, refreshTokenValidUntil } =
+    await createSession(user._id);
 
-  res.json(session);
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    expires: refreshTokenValidUntil,
+  });
+
+  res.cookie('sessionId', _id, {
+    httpOnly: true,
+    expires: refreshTokenValidUntil,
+  });
+
+
+
+  res.status(200).json({
+    status: 200,
+    message: 'Successfully logged in an user!',
+    data: {
+      accessToken: accessToken,
+    },
+  });
 };
