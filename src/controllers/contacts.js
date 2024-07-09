@@ -7,9 +7,11 @@ import { parseContactsFilterParams } from '../utils/parseContactsFilterParams.js
 
 
 const getAll = async (req, res) => {
+  const {_id: userId } = req.user;
+
   const {page, perPage} = parsePaginationParams(req.query);
 const {sortBy, sortOrder} = parseSortOrder(req.query, fieldList);
-const filter = parseContactsFilterParams(req.query);
+const filter = { ...parseContactsFilterParams(req.query), userId };
 
   const contacts = await contactsService.getAll({
       page,
@@ -41,8 +43,9 @@ const getById = async (req, res) => {
 };
 
 const addContact = async (req, res) => {
+const {_id: userid} = req.user;
 
-  const result = await contactsService.addContact(req.body);
+const result = await contactsService.addContact({ ...req.body, userId: userid });
 
       res.status(201).json({
         status: 201,
