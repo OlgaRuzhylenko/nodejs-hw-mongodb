@@ -2,7 +2,19 @@ import createHttpError from 'http-errors';
 
 import { findUser, userService } from '../services/auth-services.js';
 import { compareHash } from '../utils/hash.js';
-import { createSession } from '../services/session-services.js';
+import { createSession, findSession } from '../services/session-services.js';
+
+const setupResponseSession = (res, {refreshToken, refreshTokenValidUntil, _id}) => {
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    expires: refreshTokenValidUntil,
+  });
+
+  res.cookie('sessionId', _id, {
+    httpOnly: true,
+    expires: refreshTokenValidUntil,
+  });
+};
 
 export const signupController = async (req, res) => {
   const { email } = req.body;
@@ -35,26 +47,47 @@ export const loginController = async (req, res) => {
     throw createHttpError(401, 'Password not found');
   }
 
-  const { accessToken, refreshToken, _id, refreshTokenValidUntil } =
-    await createSession(user._id);
+  const session =  await createSession(user._id);
 
-  res.cookie('refreshToken', refreshToken, {
-    httpOnly: true,
-    expires: refreshTokenValidUntil,
-  });
-
-  res.cookie('sessionId', _id, {
-    httpOnly: true,
-    expires: refreshTokenValidUntil,
-  });
-
-
+    setupResponseSession(res, session);
 
   res.status(200).json({
     status: 200,
     message: 'Successfully logged in an user!',
     data: {
-      accessToken: accessToken,
+      accessToken: session.accessToken,
     },
   });
+};
+
+export const refreshController = async (req, res) => {
+  const { refreshToken, sessionId } = req.cookies;
+
+  const currentSession = await findSession({_id: sessionId, refreshToken });
+  if (!currentSession) {
+    throw createHttpError(401, 'Session not found');
+  }
+  const refreshTokenExpired =  Date.now() > new Date(currentSession.refreshTokenValidUntil);
+  if(refreshTokenExpired) {
+    throw createHttpError(401, 'Session expired');
+  }
+
+  const newSession = await createSession(currentSession.userId);
+
+  setupResponseSession(res, newSession);
+
+  res.status(200).json({
+    status: 200,
+    message: 'Successfully refreshed a session!',
+    data: {
+      accessToken: newSession.accessToken,
+    },
+  });
+};
+
+export const logoutController = async (req, res) => {
+  const {sessionId} = req.cookies;
+  if (!sessionId) {
+    throw createHttpError(401, 'Session not found');
+  }
 };

@@ -28,9 +28,7 @@ if(filter.userId) {
   };
 };
 
-const getContactById = async (contactId) => {
-  return await ContactsCollection.findById(contactId);
-};
+const getContactById = async (filter) => { return await ContactsCollection.findOne(filter)};
 
 const addContact = async (data) => {
   return await ContactsCollection.create(data);

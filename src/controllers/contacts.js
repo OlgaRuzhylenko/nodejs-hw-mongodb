@@ -28,8 +28,10 @@ const filter = { ...parseContactsFilterParams(req.query), userId };
 };
 
 const getById = async (req, res) => {
-  const { contactId } = req.params;
-  const contact = await contactsService.getContactById(contactId);
+  const {_id: userId } = req.user;
+
+  const { contactId} = req.params;
+  const contact = await contactsService.getContactById({_id: contactId, userId});
 
   if (!contact) {
     throw createHttpError(404, 'Contact not found');
@@ -56,10 +58,8 @@ const result = await contactsService.addContact({ ...req.body, userId: userid })
 
 const patchContact = async (req, res) => {
   const { contactId } = req.params;
-  const contact = await contactsService.updateContact(
-    { _id: contactId },
-    req.body,
-  );
+  const {_id: userid} = req.user;
+  const contact = await contactsService.updateContact(  { _id: contactId, userid },  req.body );
 
   if (!contact) {
     throw createHttpError(404, 'Contact not found');
@@ -74,7 +74,8 @@ const patchContact = async (req, res) => {
 
 const deleteContact = async (req, res) => {
   const { contactId } = req.params;
-  const contact = await contactsService.deleteContact({ _id: contactId });
+  const {_id: userid} = req.user;
+  const contact = await contactsService.deleteContact({ _id: contactId, userid });
   if (!contact) {
     throw createHttpError(404, 'Contact not found');
   }
