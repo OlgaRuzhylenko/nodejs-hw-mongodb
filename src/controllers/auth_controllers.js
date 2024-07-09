@@ -2,9 +2,16 @@ import createHttpError from 'http-errors';
 
 import { findUser, userService } from '../services/auth-services.js';
 import { compareHash } from '../utils/hash.js';
-import { createSession, findSession } from '../services/session-services.js';
+import {
+  createSession,
+  findSession,
+  deleteSession,
+} from '../services/session-services.js';
 
-const setupResponseSession = (res, {refreshToken, refreshTokenValidUntil, _id}) => {
+const setupResponseSession = (
+  res,
+  { refreshToken, refreshTokenValidUntil, _id },
+) => {
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     expires: refreshTokenValidUntil,
@@ -47,9 +54,9 @@ export const loginController = async (req, res) => {
     throw createHttpError(401, 'Password not found');
   }
 
-  const session =  await createSession(user._id);
+  const session = await createSession(user._id);
 
-    setupResponseSession(res, session);
+  setupResponseSession(res, session);
 
   res.status(200).json({
     status: 200,
@@ -63,12 +70,13 @@ export const loginController = async (req, res) => {
 export const refreshController = async (req, res) => {
   const { refreshToken, sessionId } = req.cookies;
 
-  const currentSession = await findSession({_id: sessionId, refreshToken });
+  const currentSession = await findSession({ _id: sessionId, refreshToken });
   if (!currentSession) {
     throw createHttpError(401, 'Session not found');
   }
-  const refreshTokenExpired =  Date.now() > new Date(currentSession.refreshTokenValidUntil);
-  if(refreshTokenExpired) {
+  const refreshTokenExpired =
+    Date.now() > new Date(currentSession.refreshTokenValidUntil);
+  if (refreshTokenExpired) {
     throw createHttpError(401, 'Session expired');
   }
 
@@ -86,8 +94,15 @@ export const refreshController = async (req, res) => {
 };
 
 export const logoutController = async (req, res) => {
-  const {sessionId} = req.cookies;
+  const { sessionId } = req.cookies;
   if (!sessionId) {
     throw createHttpError(401, 'Session not found');
   }
+
+  await deleteSession({_id: sessionId});
+
+  res.clearCookie('sessionId');
+  res.clearCookie('refreshToken');
+
+  res.status(204).send();
 };
