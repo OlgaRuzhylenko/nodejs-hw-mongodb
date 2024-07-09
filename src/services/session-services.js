@@ -3,7 +3,7 @@ import Session from '../db/models/Session.js';
 import {
   ACCESS_TOKEN_LIFETIME,  REFRESH_TOKEN_LIFETIME} from '../constants/user-constants.js';
 
-const findSession = filter => Session.findOne(filter);
+export const findSession = filter => Session.findOne(filter);
 
 export const createSession = async (userId) => {
   await Session.deleteOne({ userId });
