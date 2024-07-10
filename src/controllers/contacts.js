@@ -58,7 +58,7 @@ const result = await contactsService.addContact({ ...req.body, userId: userid })
 
 const patchContact = async (req, res) => {
   const { contactId } = req.params;
-  console.log(contactId);
+  // console.log(contactId);
   const {_id: userId} = req.user;
   const contact = await contactsService.updateContact(  { _id: contactId, userId },  req.body );
 
