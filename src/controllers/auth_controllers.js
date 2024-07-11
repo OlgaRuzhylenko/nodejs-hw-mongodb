@@ -1,10 +1,21 @@
 import createHttpError from 'http-errors';
 
-import { findUser, userService } from '../services/auth-services.js';
+import {
+  findUser,
+  requestResetToken,
+  userService,
+} from '../services/auth-services.js';
 import { compareHash } from '../utils/hash.js';
-import {createSession, findSession, deleteSession} from '../services/session-services.js';
+import {
+  createSession,
+  findSession,
+  deleteSession,
+} from '../services/session-services.js';
 
-const setupResponseSession = ( res, { refreshToken, refreshTokenValidUntil, _id }) => {
+const setupResponseSession = (
+  res,
+  { refreshToken, refreshTokenValidUntil, _id },
+) => {
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     expires: refreshTokenValidUntil,
@@ -92,10 +103,20 @@ export const logoutController = async (req, res) => {
     throw createHttpError(401, 'Session not found');
   }
 
-  await deleteSession({_id: sessionId});
+  await deleteSession({ _id: sessionId });
 
   res.clearCookie('sessionId');
   res.clearCookie('refreshToken');
 
   res.status(204).send();
+};
+
+export const requestResetEmailController = async (req, res) => {
+  await requestResetToken(req.body.email);
+
+  res.json({
+    message: 'Reset password email has been successfully sent.!',
+    status: 200,
+    data: {},
+  });
 };
