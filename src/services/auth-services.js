@@ -3,7 +3,6 @@ import User from '../db/models/User.js';
 import { hashValue } from '../utils/hash.js';
 import jwt from 'jsonwebtoken';
 import env from '../utils/env.js';
-import { SMTP } from '../constants/user-constants.js';
 import { sendEmail } from '../utils/sendMail.js';
 
 export const findUser = (filter) => User.findOne(filter);
@@ -29,12 +28,13 @@ export const requestResetToken = async (email) => {
       expiresIn: '5m',
     },
   );
+  const resetUrl = `${env('FRONTEND_URL')}/reset-password?token=${resetToken}`;
 
   await sendEmail({
-    from: env(SMTP.SMTP_FROM),
+    from: env('SMTP_FROM'),
     to: email,
     subject: 'Reset your password',
-    html: `<p>Click <a href="${resetToken}">here</a> to reset your password!</p>`,
+    html: `<p>Click <a href="${resetUrl}">here</a> to reset your password!</p>`,
   });
 };
 
