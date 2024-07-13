@@ -1,8 +1,17 @@
 import createHttpError from 'http-errors';
 
-import {findUser, requestResetToken, resetPassword, userService} from '../services/auth-services.js';
+import {
+  findUser,
+  requestResetToken,
+  resetPassword,
+  userService,
+} from '../services/auth-services.js';
 import { compareHash } from '../utils/hash.js';
-import {createSession, findSession, deleteSession} from '../services/session-services.js';
+import {
+  createSession,
+  findSession,
+  deleteSession,
+} from '../services/session-services.js';
 
 const setupResponseSession = (
   res,
@@ -113,12 +122,12 @@ export const requestResetEmailController = async (req, res) => {
   });
 };
 
-export const resetPasswordController = async(req, res) => {
+export const resetPasswordController = async (req, res) => {
   await resetPassword(req.body);
+
   res.json({
     status: 200,
-       message: "Password has been successfully reset.",
-       data: {}
-
+    message: 'Password has been successfully reset.',
+    data: {},
   });
 };

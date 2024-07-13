@@ -9,6 +9,7 @@ import path from 'node:path';
 import fs from 'node:fs/promises';
 import { TEMPLATES_DIR } from '../server.js';
 import { compareHash } from '../utils/hash.js';
+import { deleteSession } from './session-services.js';
 
 export const findUser = (filter) => User.findOne(filter);
 
@@ -80,6 +81,8 @@ export const resetPassword = async (payload) => {
   }
 
   await User.updateOne({ _id: user._id }, { password: encryptedPassword });
+
+  await deleteSession({ userId: user._id });
 };
 
 export const userService = { signup };
