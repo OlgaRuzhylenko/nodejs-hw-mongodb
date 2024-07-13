@@ -5,6 +5,7 @@ import env from './utils/env.js';
 import contactsRouter from './routers/contacts.js';
 import authRouter from './routers/auth-router.js';
 import cookieParser from 'cookie-parser';
+import path from 'node:path'
 
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
@@ -35,5 +36,6 @@ app.use(cookieParser());
     console.log(`Server is running on port ${port}`);
   });
 };
+export const TEMPLATES_DIR = path.join(process.cwd(), 'src', 'templates');
 
 export default setupServer;
