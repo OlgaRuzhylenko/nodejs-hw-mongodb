@@ -1,14 +1,22 @@
-import cloudinary from 'cloudinary';
+import { v2 as cloudinary } from 'cloudinary';
 import env from './env.js';
 
-cloudinary.v2.config({
-  secure: true,
-  cloud_name: env('CLOUDINARY_CLOUD_NAME'),
-  api_key: env('CLOUDINARY_API_KEY'),
-  api_secret: env('CLOUDINARY_API_SECRET'),
+const cloud_name = env('CLOUDINARY_CLOUD_NAME');
+const api_key = env('CLOUDINARY_API_KEY');
+const api_secret = env('CLOUDINARY_API_SECRET');
+
+cloudinary.config({
+  cloud_name,
+  api_key,
+  api_secret
 });
 
-export const saveFileToCloudinary = async (file) => {
-  const response = await cloudinary.v2.uploader.upload(file.path);
+const saveFileToCloudinary = async (file, folder) => {
+  const response = await cloudinary.uploader.upload(file.path, {
+    folder,
+  });
+
   return response.secure_url;
 };
+
+export default saveFileToCloudinary;
