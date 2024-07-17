@@ -80,14 +80,10 @@ const addContact = async (req, res) => {
 const patchContact = async (req, res) => {
   const { contactId } = req.params;
   const { _id: userId } = req.user;
-
+// console.log(req.file);
   let photo = '';
   if (req.file) {
-    if (enableCloudinary === 'true') {
-      photo = await saveFileToCloudinary(req.file, 'Contacts_photo');
-    } else {
-      photo = await saveFileToPublicDir(req.file, 'photos');
-    }
+    photo = await saveFileToCloudinary(req.file, 'Contacts_photo');
   }
 
   const contact = await contactsService.updateContact(
