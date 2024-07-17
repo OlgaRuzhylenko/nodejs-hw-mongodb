@@ -55,7 +55,7 @@ const addContact = async (req, res) => {
   const { _id: userid } = req.user;
 
   let photo = '';
-
+// console.log(req.file);
   if (req.file) {
     if (enableCloudinary === 'true') {
       photo = await saveFileToCloudinary(req.file, 'Contacts_photo');

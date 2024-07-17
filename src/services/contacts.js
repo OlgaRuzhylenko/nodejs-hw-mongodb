@@ -36,7 +36,7 @@ const addContact = async (data) => {
 
 const updateContact = async (filter, data, options = {}) => {
   const result = await ContactsCollection.findOneAndUpdate(filter, data, {
-    new: true,
+    // new: true,
     // runValidators: true,
     includeResultMetadata: true,
     ...options,
