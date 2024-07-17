@@ -7,6 +7,9 @@ import { parseContactsFilterParams } from '../utils/parseContactsFilterParams.js
 import saveFileToCloudinary from '../utils/saveFileToCloudinary.js';
 import saveFileToPublicDir from '../utils/saveFileToPublicDir.js';
 
+import env from '../utils/env.js';
+const enableCloudinary = env('ENABLE_CLOUDINARY');
+
 const getAll = async (req, res) => {
   const { _id: userId } = req.user;
 
@@ -52,8 +55,13 @@ const addContact = async (req, res) => {
   const { _id: userid } = req.user;
 
   let photo = '';
+
   if (req.file) {
-    photo = await saveFileToPublicDir(req.file, 'photos');
+    if (enableCloudinary === 'true') {
+      photo = await saveFileToCloudinary(req.file, 'Contacts_photo');
+    } else {
+      photo = await saveFileToPublicDir(req.file, 'photos');
+    }
   }
 
   const result = await contactsService.addContact({
@@ -75,13 +83,17 @@ const patchContact = async (req, res) => {
 
   let photo = '';
   if (req.file) {
-    photo = await saveFileToPublicDir(req.file, 'photos');
-  };
+    if (enableCloudinary === 'true') {
+      photo = await saveFileToCloudinary(req.file, 'Contacts_photo');
+    } else {
+      photo = await saveFileToPublicDir(req.file, 'photos');
+    }
+  }
 
   const contact = await contactsService.updateContact(
     { _id: contactId, userId },
     req.body,
-    photo
+    photo,
   );
 
   if (!contact) {
