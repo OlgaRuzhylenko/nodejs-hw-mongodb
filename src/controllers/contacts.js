@@ -4,6 +4,7 @@ import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortOrder } from '../utils/parseSortOrder.js';
 import { fieldList } from '../constants/contacts-constants.js';
 import { parseContactsFilterParams } from '../utils/parseContactsFilterParams.js';
+import saveFileToCloudinary from '../utils/saveFileToCloudinary.js';
 
 
 const getAll = async (req, res) => {
@@ -13,13 +14,7 @@ const getAll = async (req, res) => {
 const {sortBy, sortOrder} = parseSortOrder(req.query, fieldList);
 const filter = { ...parseContactsFilterParams(req.query), userId };
 
-  const contacts = await contactsService.getAll({
-      page,
-      perPage,
-      sortBy,
-      sortOrder,
-      filter,
-    });
+  const contacts = await contactsService.getAll({page, perPage, sortBy, sortOrder,  filter,  });
   res.json({
     status: 200,
     message: 'Successfully found contacts!',
@@ -47,6 +42,11 @@ const getById = async (req, res) => {
 const addContact = async (req, res) => {
 const {_id: userid} = req.user;
 
+let contactPhoto = '';
+if (req.file) {
+  photo = saveFileToCloudinary(req.file, 'Contacts_photo');
+}
+
 const result = await contactsService.addContact({ ...req.body, userId: userid });
 
       res.status(201).json({
@@ -58,7 +58,6 @@ const result = await contactsService.addContact({ ...req.body, userId: userid })
 
 const patchContact = async (req, res) => {
   const { contactId } = req.params;
-  // console.log(contactId);
   const {_id: userId} = req.user;
   const contact = await contactsService.updateContact(  { _id: contactId, userId },  req.body );
 
