@@ -9,6 +9,7 @@ import path from 'node:path'
 
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
+import { PUBLIC_DIR } from './constants/user-constants.js';
 
 const port = env('PORT', '3000');
 
@@ -24,6 +25,7 @@ const setupServer = () => {
   app.use(logger);
   app.use(cors());
 app.use(cookieParser());
+app.use(express.static(PUBLIC_DIR));
 
   app.use('/auth', authRouter);
   app.use('/contacts', contactsRouter);
