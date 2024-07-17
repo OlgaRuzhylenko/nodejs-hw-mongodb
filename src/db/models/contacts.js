@@ -1,6 +1,9 @@
 import { Schema, model } from 'mongoose';
 
-import { contactTypeList, stringLength} from '../../constants/contacts-constants.js';
+import {
+  contactTypeList,
+  stringLength,
+} from '../../constants/contacts-constants.js';
 import { mongooseSaveError, setUpdateSettings } from './hooks.js';
 
 const contactsSchema = new Schema(
@@ -30,14 +33,14 @@ const contactsSchema = new Schema(
       required: true,
       default: 'personal',
     },
+    photo: {
+      type: String,
+    },
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'user',
       required: true,
     },
-    photo: {
-      type: String,
-    }
   },
   {
     timestamps: true,
