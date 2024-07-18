@@ -19,16 +19,13 @@ paths:
   /contacts:
     get:
       $ref: ../swagger/paths/contacts/get.yaml
+    post:
+      $ref: ../swagger/paths/contacts/post.yaml
   /contacts/{id}:
     get:
       $ref: ../swagger/paths/contacts/{id}/get.yaml
-  /contacts:
-    post:
-      $ref: ../swagger/paths/contacts/post.yaml
-  /contacts:
     patch:
       $ref: ../swagger/paths/contacts/{id}/patch.yaml
-  /contacts:
     delete:
       $ref: ../swagger/paths/contacts/{id}/delete.yaml
 components:
