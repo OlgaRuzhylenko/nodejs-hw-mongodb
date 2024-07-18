@@ -1,18 +1,22 @@
 tags:
   - Contacts
-summary: Create contact
-operationId: createContact
-description: 'Create a contact with payload'
+summary: Update contact
+operationId: updateContact
+description: 'Update a contact with payload'
 security:
   - bearerAuth: []
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+      example: '65ca67e7ae7f10c88b598384'
 requestBody:
   content:
     multipart/form-data:
       schema:
         type: object
-        required:
-          - name
-          - phoneNumber
         properties:
           name:
             description: "Contact's name"
@@ -41,7 +45,7 @@ requestBody:
             example: <https://res.cloudinary.com/uqwgdu/image/upload/image.png>
 responses:
   '201':
-    description: Creates a contact
+    description: Updates a contact
     content:
       application/json:
         schema:
@@ -56,7 +60,7 @@ responses:
               example: 200
             message:
               type: string
-              example: Successfully created a contact!
+              example: Successfully updated a contact!
             data:
               type: object
               $ref: '../../components/schemas/contact.yaml'
