@@ -81,15 +81,25 @@ const patchContact = async (req, res) => {
   const { contactId } = req.params;
   const { _id: userId } = req.user;
 // console.log(req.file);
-  let photo = '';
-  if (req.file) {
-    photo = await saveFileToCloudinary(req.file, 'Contacts_photo');
+const photo = req.file;
+let photoUrl = '';
+
+  if (photo) {
+    if (enableCloudinary === 'true') {
+      photoUrl = await saveFileToCloudinary(photo, 'Contacts_photo');
+    } else {
+      photoUrl = await saveFileToPublicDir(photo, 'photos');
+    }
   }
+
+  const data = {
+    ...req.body,
+    photo: photoUrl,
+  };
 
   const contact = await contactsService.updateContact(
     { _id: contactId, userId },
-    req.body,
-    photo,
+    data,
   );
 
   if (!contact) {
