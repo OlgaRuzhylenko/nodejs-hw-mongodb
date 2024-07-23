@@ -2,7 +2,7 @@ tags:
   - Contacts
 summary: Create contact
 operationId: createContact
-description: 'Create a contact with payload'
+description: "Create a contact with payload"
 security:
   - bearerAuth: []
 requestBody:
@@ -33,7 +33,7 @@ requestBody:
           contactType:
             description: "Contact's type"
             type: string
-            enum: ['work', 'home', 'personal']
+            enum: ["work", "home", "personal"]
             example: "work"
           photo:
             description: "Link to contact's photo"
